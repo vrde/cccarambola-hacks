@@ -2,7 +2,7 @@
   Nathan Seidle
   SparkFun Electronics 2011
   
-  Mod by Marco Brianza to get data from serial port
+  Mod by Marco Brianza, Alberto Granzotto and Stefano Cavallari to get data from serial port
   
   This code is public domain but you buy me a beer if you use this and we meet someday (Beerware license).
   
