@@ -1,4 +1,4 @@
-import serial
+from serial import Serial
 from random import randint, random
 
 from collections import deque
@@ -23,17 +23,25 @@ class Color(object):
     def __nonzero__(self):
         return self.r or self.g or self.b
 
+
 class Driver(object):
 
     def __init__(self, serial=None, factor=0.5, length=32):
+
         if serial is None:
-            serial = serial.Serial('/dev/ttyUSB0', 115200,
+            serial = Serial('/dev/ttyUSB0', 115200,
+                    xonxoff=0, rtscts=0, timeout=None)
+
+        elif isinstance(serial, basestring):
+            serial = Serial(serial, 115200,
                     xonxoff=0, rtscts=0, timeout=None)
 
         self.serial = serial
         self.factor = factor
         self.length = length
-        self.strip = deque(Color(0, 0, 0) for i in range(length))
+        self.strip = deque(
+            [Color(0, 0, 0) for i in range(length)],
+            maxlen=length)
 
     def render(self):
         f = self.factor
@@ -57,6 +65,13 @@ class Driver(object):
     def shift(self, n):
         self.strip.rotate(n)
 
+    def pushl(self, c):
+        self.strip.appendleft(c)
+
+    def pushr(self, c):
+        self.strip.append(c)
+
+
 if __name__ == '__main__':
     import sys, time
 
@@ -65,7 +80,7 @@ if __name__ == '__main__':
     else:
         sys.exit('usage: stripdriver.py /dev/<tty-usb>')
 
-    s = serial.Serial(port, 115200, xonxoff=0, rtscts=0, timeout=None)
+    s = Serial(port, 115200, xonxoff=0, rtscts=0, timeout=None)
     d = Driver(serial=s, factor=0.05)
     
     d.strip[0].r = 255
