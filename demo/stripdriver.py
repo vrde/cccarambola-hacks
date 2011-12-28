@@ -58,7 +58,7 @@ class Driver(object):
         self.strip.rotate(n)
 
 if __name__ == '__main__':
-    import sys
+    import sys, time
 
     if len(sys.argv) == 2:
         port = sys.argv[1]
