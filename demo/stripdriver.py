@@ -71,17 +71,29 @@ if __name__ == '__main__':
     d.strip[0].r = 255
     
     c = 0
-    
+
     while True:
+        time.sleep(0.001)
         if random() <= 0.1:
             if random() < 0.5:
                 kill = randint(0, 31)
                 if d.strip[kill]:
+                    #d.strip[kill] = Color(0,0,255)
+                    #d.render()
                     d.strip[kill] = Color(0, 0, 0)
             else:
                 spawn = randint(0, 31)
                 if not d.strip[spawn]:
-                    d.strip[spawn] = Color(255, 0, 0)
+                    r = random()
+                    g = random()
+                    b = random()
+                    factor = r + g + b
+                    #factor = 1
+                    r = int(r * factor * 255.)
+                    g = int(g * factor * 255.)
+                    b = int(b * factor * 255.)
+                    #d.strip[spawn] = Color(0 ,255, 0)
+                    #d.render()
+                    d.strip[spawn] = Color(r, g, b)
         d.shift(1)
         d.render()
-
