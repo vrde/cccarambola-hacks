@@ -89,9 +89,9 @@ if __name__ == '__main__':
                     b = random()
                     factor = r + g + b
                     #factor = 1
-                    r = int(r * factor * 255.)
-                    g = int(g * factor * 255.)
-                    b = int(b * factor * 255.)
+                    r = int(r / factor * 255.)
+                    g = int(g / factor * 255.)
+                    b = int(b / factor * 255.)
                     #d.strip[spawn] = Color(0 ,255, 0)
                     #d.render()
                     d.strip[spawn] = Color(r, g, b)
