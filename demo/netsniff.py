@@ -42,9 +42,9 @@ driver = Driver(DEV)
 
 def get_one():
     l = stdout.readline()
-    if 'https' in l:
+    if '.80 ' in l:
         return TrafficTypes.https
-    elif 'http' in l:
+    elif '.443 ' in l:
         return TrafficTypes.http
     else:
         return TrafficTypes.other
