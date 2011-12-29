@@ -8,7 +8,7 @@ Created on Wed Dec 28 23:49:16 2011
 from stripdriver import Driver
 from subprocess import Popen, PIPE
 import threading
-from collections import Counter, deque
+from collections import deque
 import time
 from datetime import datetime
 now = datetime.now
@@ -25,6 +25,8 @@ SAMPLE_INTVL = 0.05
 REFRESH_INTVL = 0.05
 
 statlock = threading.Lock()
+
+Counter = lambda :[0,0,0]
 
 class TrafficTypes:
     http = 0
