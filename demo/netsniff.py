@@ -5,7 +5,7 @@ Created on Wed Dec 28 23:49:16 2011
 @author: kiwi
 """
 
-from stripdriver import Driver
+from stripdriver import Driver, Color
 from subprocess import Popen, PIPE
 import threading
 from collections import deque
@@ -22,15 +22,17 @@ IF = 'wmon0'
 DEV = '/dev/ttyS1'
 #DEV = '/dev/ttyUSB0'
 SAMPLES = 128
-LEDS = 32
-ROTATE_SLEEP_INTVL = 0.1
+LEDS = 8
+ROTATE_SLEEP_INTVL = 0.05
+SAMPLE_INTVL = 0.05
 #LED_ROTATE_INTV = 0.1
 REFRESH_INTVL = 0.1
 
 statlock = threading.Lock()
 
-#Counter = lambda :[0,0,0]
-Counter = lambda :array("I", (0,0,0))
+#Counter = lambda : [0,0,0]
+Counter = lambda : array("I", (0,0,0))
+#Counter = lambda: [0,0,0]
 
 class TrafficTypes:
     http = 0
@@ -43,7 +45,7 @@ stdout = p.stdout
 stats = deque()
 for i in range(SAMPLES):
     stats.append(Counter())
-driver = Driver(DEV)
+driver = Driver(DEV, substrips=4)
 
 
 def get_one():
@@ -91,7 +93,13 @@ def render():
             g += s[TrafficTypes.http] * factor
             b += s[TrafficTypes.other] * factor
             maxv = max(max((r,g,b)), maxv)
-            driver[cled] = (int(r * 255 /maxv), int(g * 255 / maxv), int(b * 255 / maxv))
+            driver.strips[TrafficTypes.http][cled] = Color(r * 255 / maxv, 0, 0)
+            driver.strips[TrafficTypes.https][cled] = Color(0, g * 255 / maxv, 0)
+            driver.strips[TrafficTypes.other][cled] = Color(0, 0, b * 255 / maxv)
+            #driver[cled] = (r * 255 / maxv , g * 255 / maxv, b * 255 / maxv)
+
+        for s in driver.strips:
+            s[0] = Color(32, 16, 0)
         driver.render()
 
 def main():
