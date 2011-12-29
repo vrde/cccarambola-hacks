@@ -9,9 +9,12 @@ from stripdriver import Driver
 from subprocess import Popen, PIPE
 import threading
 from collections import deque
+from math import modf
 import time
 from datetime import datetime
 now = datetime.now
+
+# iw phy phy0 interface add mon0 type monitor
 
 IF = 'wmon0'
 #IF = 'wlan0'
@@ -20,9 +23,8 @@ DEV = '/dev/ttyS1'
 SAMPLES = 512
 LEDS = 32
 ROTATE_SLEEP_INTVL = 0.05
-SAMPLE_INTVL = 0.05
 #LED_ROTATE_INTV = 0.1
-REFRESH_INTVL = 0.05
+REFRESH_INTVL = 0.1
 
 statlock = threading.Lock()
 
@@ -33,7 +35,7 @@ class TrafficTypes:
     https = 1
     other = 2
 
-p = Popen(['tcpdump', '-ni', IF, 'tcp'], bufsize=100,
+p = Popen(['tcpdump', '-ni', IF, 'tcp'], bufsize=80,
                      stdin=PIPE, stdout=PIPE, close_fds=True)
 stdout = p.stdout
 stats = deque()
@@ -45,9 +47,9 @@ driver = Driver(DEV)
 def get_one():
     l = stdout.readline()
     if '.80 ' in l:
-        return TrafficTypes.https
-    elif '.443 ' in l:
         return TrafficTypes.http
+    elif '.443 ' in l:
+        return TrafficTypes.https
     else:
         return TrafficTypes.other
 
@@ -74,20 +76,25 @@ def render():
         r,g,b = 0,0,0
         maxv = 255
         for i, s in enumerate(stats):
-            led = (LEDS * i) / SAMPLES
+            led = (float(LEDS) * i) / SAMPLES
+            factor, _ = modf(led)
+            factor = factor * 2
+            led = int(led)
+            if factor > 1:
+                factor = 2 - factor
             if led != cled:
-                r, g, b = 0, 0, 0
+                r, g, b = 0., 0., 0.
                 cled = led
-            r += s[TrafficTypes.https]
-            g += s[TrafficTypes.https]
-            b += s[TrafficTypes.other]
+            r += s[TrafficTypes.https] * factor
+            g += s[TrafficTypes.http] * factor
+            b += s[TrafficTypes.other] * factor
             maxv = max(max((r,g,b)), maxv)
-            driver[cled] = (r * 255 /maxv , g * 255 / maxv, b * 255 / maxv)
+            driver[cled] = (int(r * 255 /maxv), int(g * 255 / maxv), int(b * 255 / maxv))
         driver.render()
 
 def main():
         rotatort = threading.Thread(target=rotator, args=(stats, ROTATE_SLEEP_INTVL))
-        statst = threading.Thread(target=stats_updater, args=(stats, SAMPLE_INTVL))
+        statst = threading.Thread(target=stats_updater, args=(stats,))
         rotatort.daemon = True
         statst.daemon = True
         rotatort.start()
