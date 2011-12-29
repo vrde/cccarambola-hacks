@@ -60,13 +60,12 @@ def rotator(stats, interval):
             stats.popleft()
             stats.append(Counter())
 
-def stats_updater(stats, interval):
+def stats_updater(stats):
     while True:
         print "stats update"
         p = get_one()
         with statlock:
             stats[-1][p] += 1
-        time.sleep(interval)
 
 def render():
     with statlock:
