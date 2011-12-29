@@ -87,6 +87,8 @@ def render():
 def main():
         rotatort = threading.Thread(target=rotator, args=(stats, ROTATE_SLEEP_INTVL))
         statst = threading.Thread(target=stats_updater, args=(stats, SAMPLE_INTVL))
+        rotatort.daemon = True
+        statst.daemon = True
         rotatort.start()
         statst.start()
         while 1:
