@@ -12,6 +12,7 @@ from collections import deque
 from math import modf
 import time
 from datetime import datetime
+from array import array
 now = datetime.now
 
 # iw phy phy0 interface add mon0 type monitor
@@ -20,15 +21,16 @@ IF = 'wmon0'
 #IF = 'wlan0'
 DEV = '/dev/ttyS1'
 #DEV = '/dev/ttyUSB0'
-SAMPLES = 512
+SAMPLES = 128
 LEDS = 32
-ROTATE_SLEEP_INTVL = 0.05
+ROTATE_SLEEP_INTVL = 0.1
 #LED_ROTATE_INTV = 0.1
 REFRESH_INTVL = 0.1
 
 statlock = threading.Lock()
 
-Counter = lambda :[0,0,0]
+#Counter = lambda :[0,0,0]
+Counter = lambda :array("I", (0,0,0))
 
 class TrafficTypes:
     http = 0
