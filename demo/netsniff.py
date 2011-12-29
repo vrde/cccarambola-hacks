@@ -13,10 +13,10 @@ import time
 from datetime import datetime
 now = datetime.now
 
-IF = 'wifi0'
-IF = 'wlan0'
-#DEV = '/dev/ttyS0'
-DEV = '/dev/ttyUSB0'
+IF = 'wmon0'
+#IF = 'wlan0'
+DEV = '/dev/ttyS1'
+#DEV = '/dev/ttyUSB0'
 SAMPLES = 512
 LEDS = 32
 ROTATE_SLEEP_INTVL = 0.05
