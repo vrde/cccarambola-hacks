@@ -89,8 +89,8 @@ def render():
             if led != cled:
                 r, g, b = 0., 0., 0.
                 cled = led
-            r += s[TrafficTypes.https] * factor
-            g += s[TrafficTypes.http] * factor
+            r += s[TrafficTypes.http] * factor
+            g += s[TrafficTypes.https] * factor
             b += s[TrafficTypes.other] * factor
             maxv = max(max((r,g,b)), maxv)
             driver.strips[TrafficTypes.http][cled] = Color(r * 255 / maxv, 0, 0)
